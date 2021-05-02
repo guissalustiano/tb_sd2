@@ -46,7 +46,6 @@ begin
 		enableTB <= '0';
 		wait until rising_edge(ckTB);
 		wait for 1 ns;
-		-- assert dataTB = "ZZZZZZZZ" report "Vish";
 	
 		wait until rising_edge(ckTB);
 		wait for 1 ns;
@@ -59,12 +58,13 @@ begin
 
 		wait until falling_edge(bsyTB);
 		
+		-- Teste 3: Leitura
 		enableTB <= '1';
 		write_enableTB <= '0';
 		
 		wait until falling_edge(bsyTB);
 
-		assert dataTB = "01010101" report "Procedimento realizado com sucesso.";
+		assert dataTB = "01010101" report "Erro!";
 
 		wait until rising_edge(ckTB);
 		oneTB <= '0';
