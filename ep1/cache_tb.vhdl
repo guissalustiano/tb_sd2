@@ -110,7 +110,6 @@ begin
 
     wait until falling_edge(bsy);
 
-
     -- read hit
     write_enable <= '0';
     addr_i <= x"0204";
@@ -131,6 +130,31 @@ begin
 
     wait until falling_edge(bsy);
     assert data_o=x"12" report "Teste hit 2 falhou!" severity note;
+
+    -- writing
+    write_enable <= '1';
+    addr_i <= x"0404";
+    data_i <= x"98";
+
+    wait until falling_edge(bsy);
+
+    write_enable <= '1';
+    addr_i <= x"0204";
+    data_i <= x"56";
+
+    -- read miss
+    write_enable <= '0';
+    addr_i <= x"0404";
+
+    wait until falling_edge(bsy);
+    assert data_o=x"98" report "Teste miss 2 falhou!" severity note;
+
+    -- read hit 2
+    write_enable <= '0';
+    addr_i <= x"0404";
+
+    wait until falling_edge(bsy);
+    assert data_o=x"88" report "Teste hit 3 falhou!" severity note;
 
     report "EOF";
     enable <= '0';
