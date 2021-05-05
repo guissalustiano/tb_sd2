@@ -1,6 +1,9 @@
+-- Créditos: Iza e Miaut
+
 library ieee;
 use ieee.numeric_bit.all;
 use ieee.std_logic_1164.all;
+use work.ram;
 
 entity ramtb is end;
 
@@ -23,7 +26,7 @@ architecture behaviour of ramtb is
 
 	end component;
 
-	constant period: time := 2 ns;
+	constant period: time := 2 fs;
 
 	signal addrTB: bit_vector (7 downto 0);
 	signal dataTB: std_logic_vector (7 downto 0);
@@ -45,10 +48,11 @@ begin
 		-- Teste 1: Enable = 0;
 		enableTB <= '0';
 		wait until rising_edge(ckTB);
-		wait for 1 ns;
+		wait for 1 fs;
+		assert dataTB = "ZZZZZZZZ" report "Erro";
 	
 		wait until rising_edge(ckTB);
-		wait for 1 ns;
+		wait for 1 fs;
 
 		-- Teste 2: Escrita
 		enableTB <= '1';
@@ -57,14 +61,45 @@ begin
 		addrTB <= "00100000";
 
 		wait until falling_edge(bsyTB);
-		
-		-- Teste 3: Leitura
+		wait for period;
+
+		enableTB <= '0';
+
+		wait for period;
+
+		enableTB <= '1';
+		write_enableTB <= '1';
+		dataTB <= "10010101";
+		addrTB <= "01000000";
+
+		wait until falling_edge(bsyTB);
+
+		enableTB <= '0';
+		dataTB <= (others => 'Z');
+		addrTB <= "00100000";
+
+		wait for period;
+
 		enableTB <= '1';
 		write_enableTB <= '0';
 		
 		wait until falling_edge(bsyTB);
 
-		assert dataTB = "01010101" report "Erro!";
+		assert dataTB = "01010101" report "Erro 1!";
+
+		wait for period;
+
+		dataTB <= (others => 'Z');
+		addrTB <= "01000000";
+
+		wait for period;
+
+		enableTB <= '1';
+		write_enableTB <= '0';
+		
+		wait until falling_edge(bsyTB);
+
+		assert dataTB = "10010101" report "Erro 2!";
 
 		wait until rising_edge(ckTB);
 		oneTB <= '0';
