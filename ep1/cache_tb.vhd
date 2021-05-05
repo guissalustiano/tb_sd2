@@ -1,3 +1,5 @@
+-- Créditos: Salust
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_bit.all;
@@ -41,6 +43,7 @@ architecture arch of cache_tb is
   constant address_size_in_bits: natural := 16;
   constant cache_size_in_bits: natural := 8;
   constant word_size_in_bits: natural := 8;
+  constant delay_in_clocks: positive := 3;
   signal sim: bit := '0';
 
   signal clock, enable, write_enable: bit;
@@ -78,7 +81,7 @@ begin
     generic map(
           address_size_in_bits => address_size_in_bits,
           word_size_in_bits => word_size_in_bits,
-          delay_in_clocks => 5
+          delay_in_clocks => delay_in_clocks
     )
     port map(
       ck => clock,
