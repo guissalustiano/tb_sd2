@@ -1,5 +1,3 @@
--- Créditos: Salust
-
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_bit.all;
@@ -29,7 +27,7 @@ architecture arch of cache_tb is
     generic(
       address_size_in_bits: natural := 64;
       word_size_in_bits: natural := 32;
-      delay_in_clocks: positive := 1
+      delay_in_clocks: positive := 3
     );
     port (
       ck, enable, write_enable: in bit;
@@ -43,7 +41,6 @@ architecture arch of cache_tb is
   constant address_size_in_bits: natural := 16;
   constant cache_size_in_bits: natural := 8;
   constant word_size_in_bits: natural := 8;
-  constant delay_in_clocks: positive := 3;
   signal sim: bit := '0';
 
   signal clock, enable, write_enable: bit;
@@ -81,7 +78,7 @@ begin
     generic map(
           address_size_in_bits => address_size_in_bits,
           word_size_in_bits => word_size_in_bits,
-          delay_in_clocks => delay_in_clocks
+          delay_in_clocks => 5
     )
     port map(
       ck => clock,
@@ -98,34 +95,42 @@ begin
   begin
     report "BOT";
     sim <= '1';
-    enable <= '1';
+    enable <= '0';
+    wait until rising_edge(clock);
 
     -- writing
+    enable <= '1';
     write_enable <= '1';
     addr_i <= x"0404";
     data_i <= x"12";
 
     wait until falling_edge(bsy);
+    wait until rising_edge(clock);
 
     write_enable <= '1';
     addr_i <= x"0204";
     data_i <= x"56";
 
     wait until falling_edge(bsy);
+    wait until rising_edge(clock);
+
 
     -- read hit
     write_enable <= '0';
     addr_i <= x"0204";
+    wait until rising_edge(clock);
 
     wait until falling_edge(bsy);
-    assert data_o=x"56" report "Teste hit falhou!" severity note;
+    assert data_o=x"56" report "Teste hit 1 falhou!" severity note;
+    wait until rising_edge(clock);
 
     -- read miss
     write_enable <= '0';
     addr_i <= x"0404";
 
     wait until falling_edge(bsy);
-    assert data_o=x"12" report "Teste miss falhou!" severity note;
+    assert data_o=x"12" report "Teste miss 1 falhou!" severity note;
+    wait until rising_edge(clock);
 
     -- read hit 2
     write_enable <= '0';
@@ -133,36 +138,11 @@ begin
 
     wait until falling_edge(bsy);
     assert data_o=x"12" report "Teste hit 2 falhou!" severity note;
-
-    -- writing
-    write_enable <= '1';
-    addr_i <= x"0404";
-    data_i <= x"98";
-
-    wait until falling_edge(bsy);
-
-    write_enable <= '1';
-    addr_i <= x"0204";
-    data_i <= x"56";
-
-    -- read miss
-    write_enable <= '0';
-    addr_i <= x"0404";
-
-    wait until falling_edge(bsy);
-    assert data_o=x"98" report "Teste miss 2 falhou!" severity note;
-
-    -- read hit 2
-    write_enable <= '0';
-    addr_i <= x"0404";
-
-    wait until falling_edge(bsy);
-    assert data_o=x"88" report "Teste hit 3 falhou!" severity note;
+    wait until rising_edge(clock);
 
     report "EOF";
     enable <= '0';
     sim <= '0';
     wait;
   end process;
-
 end architecture;
