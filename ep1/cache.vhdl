@@ -58,7 +58,7 @@ begin
     end if;
   end process;
 
-  process(state, enable, nl_bsy)
+  process(state, enable, nl_bsy, is_hit, write_enable)
   begin
     -- valores "padrões", se nenhum for setado usam esse aqui
     bsy <= '1';
