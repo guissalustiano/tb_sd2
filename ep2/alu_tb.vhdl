@@ -1,4 +1,4 @@
--- OBS: ainda não consegui 10, algumas flags podem estar erradas
+-- OBS: nota conseguida com esse tb: 9.10
 -- Caso descubra algum erro entre em contato
 
 library ieee;
