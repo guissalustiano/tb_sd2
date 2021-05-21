@@ -1,6 +1,3 @@
--- OBS: nota conseguida com esse tb: 9.10
--- Caso descubra algum erro entre em contato
-
 library ieee;
 use ieee.numeric_bit.all;
 
